@@ -41,23 +41,8 @@ An IoT-enabled smart access control system that provides secure authentication, 
 * Hardware–software integration
 * Cloud connectivity
 * Real-time communication
-* System debugging
+ 
 
-## Future Enhancements
-
-* Face recognition
-* Mobile application
-* Visitor management
-* Email/SMS notifications
-* Audit dashboard
-
-## Screenshots
-
-*Add project screenshots here.*
-
-## Circuit Diagram
-
-*Add wiring diagram here.*
 
 ## License
 
