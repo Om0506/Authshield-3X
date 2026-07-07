@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Scan - AuthShield 3X</title>
+    <style>
+        /* Background */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #003366, #0059b3);
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        /* Box Styling */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 650px; /* Increased width */
+            max-width: 95%; /* Responsive for smaller screens */
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Video Stream */
+        #video-container img {
+            width: 100%;
+            border-radius: 5px;
+            border: 2px solid white;
+        }
+
+        /* Buttons Container */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Space between buttons */
+            margin-top: 20px;
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .go-back-btn {
+            background-color: #ffaa00;
+            color: black;
+        }
+
+        .go-back-btn:hover {
+            background-color: #ffcc33;
+        }
+
+        .scan-again-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .scan-again-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔒 Face Recognition</h1>
+        <p>Scanning for authentication...</p>
+
+        <!-- Live Video Stream -->
+        <div id="video-container">
+            <img src="{{ url_for('video_feed') }}" alt="Live Video Feed">
+        </div>
+
+        <!-- Buttons in One Line -->
+        <div class="button-container">
+            <button onclick="goBack()" class="btn go-back-btn">⬅ Go Back</button>
+            <button onclick="window.location.reload()" class="btn scan-again-btn">🔄 Scan Again</button>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = '/'; // Redirect to Home
+        }
+    </script>
+
+</body>
+</html>

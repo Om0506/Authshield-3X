@@ -1,0 +1,8 @@
+opencv-python
+opencv-contrib-python
+numpy
+pandas
+firebase-admin
+Flask
+face-recognition
+Pillow

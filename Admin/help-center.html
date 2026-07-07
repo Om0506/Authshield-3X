@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help - AuthShield 3X</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      hr {
+        margin-bottom: 20px;
+        border: none;
+        height: 4px;
+        border-radius: 20px;
+        background-color: #4270f4;
+      }
+
+      .header {
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .greeting {
+        font-size: 16px;
+        color: #003366;
+      }
+
+      .welcome-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #003366;
+      }
+
+      .user-profile img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+
+      .notification-bell {
+        position: relative;
+        margin-right: 15px;
+      }
+
+      .notification-bell .notification-indicator {
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      .content-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .help-section {
+        font-size: 16px;
+        color: #003366;
+        line-height: 1.6;
+      }
+
+      .help-section h2 {
+        font-size: 22px;
+        color: #003366;
+        margin-bottom: 10px;
+      }
+
+      .help-section ul {
+        padding-left: 20px;
+      }
+
+      .help-section ul li {
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .help-section {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div>
+        <p class="greeting">Welcome Admin</p>
+        <h1 class="welcome-title">Help Center</h1>
+      </div>
+
+      <div class="header-right">
+        <div class="notification-bell">
+          <i class="fas fa-bell"></i>
+          <div class="notification-indicator"></div>
+        </div>
+        <div class="user-profile">
+          <img src="https://i.pravatar.cc/100?img=8" alt="Admin" />
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="content-container">
+      <div class="help-section">
+        <h2>About AuthShield 3X</h2>
+        <p>
+          AuthShield 3X is a smart and secure IoT-based entry management system that allows access using three different authentication methods:
+        </p>
+        <ul>
+          <li><strong>Face Recognition</strong> - Real-time face detection to authenticate users.</li>
+          <li><strong>OTP Verification</strong> - One-Time Password sent to the user's registered mobile.</li>
+          <li><strong>Admin Approval</strong> - Manual access granted by the system administrator.</li>
+        </ul>
+
+        <h2>How to Use the System</h2>
+        <ul>
+          <li>Power up the system using the connected Arduino and sensors.</li>
+          <li>Select the mode of authentication via the keypad (Face / OTP / Admin).</li>
+          <li>If Face Detection is chosen, align your face with the camera to proceed.</li>
+          <li>For OTP-based entry, enter the code sent to your mobile number.</li>
+          <li>Admin-based access can be granted through the dashboard or control panel.</li>
+        </ul>
+
+        <h2>Need Help?</h2>
+        <p>If you're facing any issues, please contact your system administrator or technical team.
+          <br>
+<span style="margin-right: 30px;"><strong>Mobile No:</strong> 9518982198</span>
+<span><strong>Email:</strong> omshinde7219@gmail.com</span>
+
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AuthShield-3X</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <script type="module" src="script/script.js"></script>
+
+    <style>
+ 
+
+      /* Styling for content1 to start after the sidebar */
+      .content1 {
+        margin-left: 280px; /* Leave space for sidebar */
+        padding: 40px;
+        flex: 1;
+        
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      h2 {
+        color: #262a39;
+      }
+
+      p {
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+      <div class="logo">
+        <i class="fas fa-shield-alt" style="color: #4270F4; font-size: 35px; margin-right: 10px;"></i>
+        <span style="font-size: 25px; font-weight: bold; color: #262A39;">AuthShield 3X</span>
+      </div>
+
+      <div class="nav-menu">
+        <a href="#" class="nav-item active" data-page="dashboard.html">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span> <!-- Main dashboard overview -->
+        </a>
+        
+        
+        <a href="#" class="nav-item" data-page="user-management.html">
+          <i class="fas fa-users"></i>
+          <span>User Management</span> <!-- Add, delete, and manage users -->
+        </a>
+        
+        <a href="#" class="nav-item" data-page="entry-logs.html">
+          <i class="fas fa-door-closed"></i>
+          <span>Entry Logs</span> <!-- Review recent entry logs -->
+        </a>
+        
+        <a href="#" class="nav-item" data-page="door-control.html">
+          <i class="fas fa-lock"></i>
+          <span>Door Control</span> <!-- Real-time door lock/unlock -->
+        </a>
+        
+        <a href="#" class="nav-item" data-page="alerts-notifications.html">
+          <i class="fas fa-bell"></i>
+          <span>Alerts & Notifications</span> <!-- Security alerts & real-time notifications -->
+        </a>
+        
+         
+        
+        <a href="#" class="nav-item" data-page="help-center.html">
+          <i class="fas fa-life-ring"></i>
+          <span>Help Center</span> <!-- Support & Documentation -->
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- Dynamic Content Section with the updated class -->
+    <div class="content1">
+      <!-- This will be dynamically updated by JavaScript -->
+    </div>
+  </body>
+</html>

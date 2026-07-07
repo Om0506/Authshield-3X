@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+hr {
+  margin-bottom: 20px;  /* Space below the hr */
+  border: none;         /* Remove default border */
+  height: 4px;          /* Increase thickness */
+  border-radius: 20px;  /* Rounded edges */
+  background-color: #4270F4;  /* Light blue shade */
+}
+
+.header {
+  margin-bottom: 15px;  /* Minimize space after the header */
+}
+
+.welcome-section {
+  margin-bottom: 0;  /* Remove excess bottom margin */
+}
+
+.user-profile {
+  margin-bottom: 0;  /* Minimize space around profile picture */
+}
+    </style>
+  </head>
+  <body>
+  <div class="header">
+    <div class="welcome-section">
+      <p class="greeting">Welcome admin</p>
+      <h1 class="welcome-title">System Dashboard</h1>
+    </div>
+
+    <div class="header-right">
+      <div class="notification-bell">
+        <i class="fas fa-bell"></i>
+        <div class="notification-indicator"></div>
+      </div>
+      <div class="user-profile">
+        <img src="https://i.pravatar.cc/100?img=8" alt="Alex Morgan" class="profile-pic" />
+      </div>
+    </div>
+  </div>
+<hr>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Main Dashboard Content -->
+    <div class="dashboard-main">
+      <!-- Transfer Cards -->
+      <div class="transfer-cards">
+        <div class="transfer-card">
+          <div class="card-icon"><i class="fas fa-users"></i></div>
+          <p class="card-title">Total Users</p>
+          <h2 class="card-amount total-users">Loading...</h2>
+        </div>
+      
+        <div class="transfer-card">
+          <div class="card-icon"><i class="fas fa-user-check"></i></div>
+          <p class="card-title">Successful Entries</p>
+          <h2 class="card-amount successful-entries">Loading...</h2>
+        </div>
+      
+        <div class="transfer-card">
+          <div class="card-icon"><i class="fas fa-user-times"></i></div>
+          <p class="card-title">Unauthorized Attempts</p>
+          <h2 class="card-amount unauthorized-attempts">0</h2>
+        </div>
+      
+        <div class="transfer-card">
+          <div class="card-icon"><i class="fas fa-user-check"></i></div>
+          <p class="card-title">Today's Entries</p>
+          <h2 class="card-amount todays-entries">Loading...</h2>
+        </div>
+      
+        <div class="transfer-card">
+          <div class="card-icon"><i class="fas fa-user-plus"></i></div>
+          <p class="card-title">Pending Approvals</p>
+          <h2 class="card-amount pending-approvals">Loading...</h2>
+        </div>
+      
+        <div class="transfer-card">
+          <div class="card-icon"><i class="fas fa-bell"></i></div>
+          <p class="card-title">Alerts & Notifications</p>
+          <h2 class="card-amount alert-notifications">Loading...</h2>
+        </div>
+      </div>
+      
+
+      <!-- Transaction & Transfer Sections -->
+      <div class="transaction-section">
+        <div class="transaction-card">
+          <h3 class="promo-title">Recent Entry Logs</h3>
+
+          <div class="transaction-item">
+            <div class="transaction-icon">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <div class="transaction-content">
+              <div class="transaction-title">User ID: U001</div>
+              <div class="transaction-time">
+                <i class="far fa-clock"></i> Today, 10:30 AM
+              </div>
+              <div class="transaction-entry-type">Entry Type: Face Detection</div>
+            </div>
+            <div class="transaction-status success">Success</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-icon">
+              <i class="fas fa-user-lock"></i>
+            </div>
+            <div class="transaction-content">
+              <div class="transaction-title">User ID: U002</div>
+              <div class="transaction-time">
+                <i class="far fa-clock"></i> Today, 11:00 AM
+              </div>
+              <div class="transaction-entry-type">Entry Type: OTP-Based Entry</div>
+            </div>
+            <div class="transaction-status denied">Denied</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-icon">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="transaction-content">
+              <div class="transaction-title">User ID: U005</div>
+              <div class="transaction-time">
+                <i class="far fa-clock"></i> Today, 12:00 PM
+              </div>
+              <div class="transaction-entry-type">Entry Type: Admin Approved</div>
+            </div>
+            <div class="transaction-status success">Success</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Sidebar -->
+    <div class="dashboard-sidebar">
+      <div class="quick-actions-card">
+        <h3 class="promo-title">Quick Actions</h3>
+
+        <div class="action-buttons">
+          <button class="action-item">
+            <i class="fas fa-check-circle"></i> Approve Pending Requests
+          </button>
+          <button class="action-item">
+            <i class="fas fa-book"></i> Download Logs History
+          </button>
+          <button class="action-item">
+            <i class="fas fa-cogs"></i> Settings
+          </button>
+          <button class="action-item">
+            <i class="fas fa-envelope"></i> Review Notifications
+          </button>
+        </div>
+      </div>
+
+      <div class="door-status-card">
+        <div class="card-icon">
+          <i class="fas fa-door-closed"></i>
+        </div>
+        <h3 class="card-title">Door Status</h3>
+
+        <div class="status">
+          <p><strong>Status:</strong> <span class="door-status closed">Closed</span></p>
+          <p><strong>Lock:</strong> <span class="lock-status locked">Locked</span></p>
+          <p><strong>Last Entry:</strong> Today, 10:30 AM (Face Detection)</p>
+          <p><strong>Next Scheduled Lock:</strong> 6:00 PM</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Firebase Scripts -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+  // ✅ Add this after Firebase SDKs are loaded
+  function initializeFirebase() {
+    if (!firebase.apps.length) {
+      const firebaseConfig = {
+          apiKey: "AIzaSyAhTFt7dSyZe8cvMUsGdKBEgJMqH7OOTWI",
+          authDomain: "iotbasedentrysystem-c2669.firebaseapp.com",
+          databaseURL: "https://iotbasedentrysystem-c2669-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "iotbasedentrysystem-c2669",
+        };
+    
+      firebase.initializeApp(firebaseConfig);
+    }
+  }
+
+  function updateDashboardStats() {
+  initializeFirebase();
+  console.log("🔁 Fetching users from Firebase...");
+  const db = firebase.database();
+  const userRef = db.ref("users");
+
+  userRef.once("value")
+    .then((snapshot) => {
+      const totalUsers = snapshot.numChildren();
+      console.log("✅ Total users:", totalUsers);
+      document.querySelector(".total-users").innerText = totalUsers;
+    })
+    .catch((error) => {
+      console.error("❌ Firebase fetch error:", error);
+    });
+}
+
+
+
+  // Call the function after page loads
+  window.addEventListener("DOMContentLoaded", updateDashboardStats);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Panel</title>
+    <style>
+         
+
+        .notification-panel {
+            background-color: white;
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            
+        }
+
+        .notification {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 0;
+        }
+
+        .notification:last-child {
+            border-bottom: none;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #007bff;
+        }
+
+        .content {
+            flex-grow: 1;
+        }
+
+        .description {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .description a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .time {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .notification:hover {
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="notification-panel">
+        <div class="notification">
+            
+            <div class="content">
+                <div class="description">Alex commented on <a href="#">Timeline Share</a></div>
+                <div class="time">10 minutes ago</div>
+            </div>
+        </div>
+
+        <div class="notification">
+            
+            <div class="content">
+                <div class="description">Ben Hur commented on <a href="#">Timeline Share</a></div>
+                <div class="time">55 minutes ago</div>
+            </div>
+        </div>
+
+        <div class="notification">
+            
+            <div class="content">
+                <div class="description">Meryn Trant liked your <a href="#">Cover Picture</a></div>
+                <div class="time">2 hours ago</div>
+            </div>
+        </div>
+
+        <div class="notification">
+            
+            <div class="content">
+                <div class="description">John Wick commented on your <a href="#">Profile Picture</a></div>
+                <div class="time">6 hours ago</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

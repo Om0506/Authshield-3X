@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinFlow User Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" defer src="script/script.js"></script>
+    <style>
+      /* Existing styles here */
+      hr {
+        margin-bottom: 20px; /* Space below the hr */
+        border: none; /* Remove default border */
+        height: 4px; /* Increase thickness */
+        border-radius: 20px; /* Rounded edges */
+        background-color: #4270f4; /* Light blue shade */
+      }
+
+      .header {
+        margin-bottom: 15px; /* Minimize space after the header */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .greeting {
+        font-size: 16px;
+        color: #003366;
+      }
+
+      .welcome-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #003366;
+      }
+
+      .user-profile img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+
+      .notification-bell {
+        position: relative;
+        margin-right: 15px;
+      }
+
+      .notification-bell .notification-indicator {
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      .table-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #ccc; /* Light grey border */
+      }
+
+      .table-title {
+        color: #003366;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .add-user-btn {
+        background-color: transparent;
+        color: #4270f4;
+        padding: 10px 20px;
+        border: 2px solid #4270f4;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+
+      .add-user-btn i {
+        margin-right: 8px;
+      }
+
+      .add-user-btn:hover {
+        background-color: #e8f0ff;
+        border-color: #4270f4;
+      }
+
+      .table-wrapper {
+        border-radius: 15px; /* Outer border round corners */
+        overflow: hidden; /* Ensures table stays inside rounded border */
+        border: 2px solid #ccc; /* Updated to light grey */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
+        background-color: white; /* Background for full rounded effect */
+        margin-top: 20px;
+      }
+
+      #list {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+        text-align: left;
+      }
+
+      #list thead {
+        background-color: #8ecae6;
+        color: white;
+      }
+
+      #list th,
+      #list td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+      }
+
+      #list tbody tr:nth-child(even) {
+        background-color: #f2f2f2; /* Light grey for even rows */
+      }
+
+      #list tbody tr:nth-child(odd) {
+        background-color: #ffffff; /* White for odd rows */
+      }
+
+      #list tbody tr:hover {
+        background-color: #bde0fe; /* Light blue hover effect */
+      }
+
+      #list td .btn {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        margin-right: 5px;
+      }
+      .date-picker-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .date-input {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      .load-logs-btn {
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .load-logs-btn:hover {
+        background-color: #0056b3;
+      }
+      .download-btn-container {
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .download-logs-btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .download-logs-btn:hover {
+        background-color: #0056b3;
+      }
+  </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div>
+        <p class="greeting">Welcome Admin</p>
+        <h1 class="welcome-title">Entry Logs</h1>
+      </div>
+  
+      <div class="header-right">
+        <div class="notification-bell">
+          <i class="fas fa-bell"></i>
+          <div class="notification-indicator"></div>
+        </div>
+        <div class="user-profile">
+          <img src="https://i.pravatar.cc/100?img=8" alt="Alex Morgan" />
+        </div>
+      </div>
+    </div>
+  
+    <hr/>
+  
+    <div class="content-container">
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">Logs History</h2>
+          <div class="date-picker-container">
+            <input type="date" id="logDatePicker" class="date-input" />
+            <button id="loadLogsButton" class="load-logs-btn">
+              <i class="fas fa-search"></i> Load Logs
+            </button>
+          </div>
+        </div>
+  
+        <div class="table-wrapper">
+          <table id="list">
+            <thead>
+              <tr>
+                <th>Sr. No</th>
+                <th>Username</th>
+                <th>Type of Access</th>
+                <th>Time</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="logsTableBody">
+              <!-- Rows will be dynamically added using JavaScript -->
+            </tbody>
+          </table>
+        </div>  
+        <div class="download-btn-container" style="display: none;" id="downloadBtnContainer">
+          <button id="downloadLogsButton" class="download-logs-btn">
+            <i class="fas fa-download"></i> Download Logs as PDF
+          </button>
+        </div>                    
+      </div>
+      
+    </div>
+  
+     
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script> 
+function initializeFirebase() {
+  if (!firebase.apps.length) {
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhTFt7dSyZe8cvMUsGdKBEgJMqH7OOTWI",
+      authDomain: "iotbasedentrysystem-c2669.firebaseapp.com",
+      databaseURL: "https://iotbasedentrysystem-c2669-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iotbasedentrysystem-c2669",
+    };
+    firebase.initializeApp(firebaseConfig);
+    console.log("Firebase initialized successfully.");
+  } else {
+    firebase.app(); // Use existing app if already initialized
+  }
+}
+
+initializeFirebase(); // Initialize Firebase once
+
+// Function to fetch and display logs for the selected date
+function initializeFirebaseLogsTable() {
+  initializeFirebase(); // Initialize Firebase once
+  const selectedDate = document.getElementById("logDatePicker").value; // Get date from input
+  const logsTableBody = document.getElementById("logsTableBody");
+  logsTableBody.innerHTML = ""; // Clear previous table data
+
+  if (selectedDate) {
+    const logsRef = firebase.database().ref(`logs/${selectedDate}`); // Reference to logs under selected date
+
+    logsRef.once("value", (snapshot) => {
+      if (snapshot.exists()) {
+        let srNo = 1;
+        snapshot.forEach((logSnapshot) => {
+          const log = logSnapshot.val();
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${srNo++}</td>
+            <td>${log.username || "N/A"}</td>
+            <td>${log.access_type || "N/A"}</td>
+            <td>${log.time || "N/A"}</td>
+            <td>${selectedDate}</td>
+          `;
+          logsTableBody.appendChild(row);
+        });
+        downloadBtnContainer.style.display = "block"; // Show the download button
+      } else {
+        downloadBtnContainer.style.display = "none"; // Hide the download button
+        logsTableBody.innerHTML = `<tr><td colspan="5">No logs found for the selected date.</td></tr>`;
+      }
+    });
+  } else {
+    
+    alert("Please select a date first.");
+  }
+}
+
+document.getElementById("loadLogsButton").addEventListener("click", initializeFirebaseLogsTable);
+
+  // Function to download the logs as a PDF
+  function downloadLogsAsPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Get the table data
+    const logsTable = document.getElementById("list");
+    const rows = logsTable.querySelectorAll("tr");
+
+    let y = 20; // Start Y position for the table in PDF
+    const marginLeft = 10;
+    const columnWidths = [20, 40, 50, 30, 40]; // Set column widths in the PDF
+
+    // Add Table Header
+    const header = rows[0];
+    const headerCells = header.querySelectorAll("th");
+    headerCells.forEach((cell, index) => {
+      doc.text(cell.innerText, marginLeft + (columnWidths[index] * index), y);
+    });
+
+    y += 10; // Space after header
+
+    // Add Table Rows
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const cells = row.querySelectorAll("td");
+
+      cells.forEach((cell, index) => {
+        doc.text(cell.innerText, marginLeft + (columnWidths[index] * index), y);
+      });
+
+      y += 10; // Space between rows
+    }
+
+    // Save the PDF
+    doc.save(`logs_${new Date().toISOString()}.pdf`);
+  }
+
+  // Attach event listener to the "Download Logs as PDF" button
+  document.getElementById("downloadLogsButton").addEventListener("click", downloadLogsAsPDF);
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinFlow User Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script type="module" defer src="script/script.js"></script>
+    <style>
+    
+
+      hr {
+        margin-bottom: 20px; /* Space below the hr */
+        border: none; /* Remove default border */
+        height: 4px; /* Increase thickness */
+        border-radius: 20px; /* Rounded edges */
+        background-color: #4270f4; /* Light blue shade */
+      }
+
+      .header {
+        margin-bottom: 15px; /* Minimize space after the header */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .greeting {
+        font-size: 16px;
+        color: #003366;
+      }
+
+      .welcome-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #003366;
+      }
+
+      .user-profile img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+
+      .notification-bell {
+        position: relative;
+        margin-right: 15px;
+      }
+      /* Main container */
+      .door-control-container {
+        display: flex;
+        gap: 30px;
+        margin-top: 30px;
+        justify-content: space-between;
+      }
+
+      /* Box Styling */
+      .box {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 30%;
+      }
+
+      .header11 {
+        font-size: 20px;
+        color: #003366;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      /* Current Door Status Box */
+      .status-box {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .status-box button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        width: 100px;
+        font-size: 16px;
+      }
+
+      .on {
+        background-color: lightgray;  /* Default state, not filled */
+        border: 2px solid #28a745;  /* Green border */
+        color: black;
+        }
+
+        .off {
+        background-color: lightgray;  /* Default state, not filled */
+        border: 2px solid #dc3545;  /* Red border */
+        color: black;
+        }
+
+        .on.active {
+        background-color: #28a745;  /* Green when active (filled) */
+        color: white;
+        }
+
+        .off.active {
+        background-color: #dc3545;  /* Red when active (filled) */
+        color: white;
+        }
+
+        .on.inactive {
+        background-color: #d9eadd;  /* Lighter green for inactive state */
+        border: 2px solid #28a745;  /* Green border */
+        color: black;
+        }
+
+        .off.inactive {
+        background-color: #f8e3e5;  /* Lighter red for inactive state */
+        border: 2px solid #dc3545;  /* Red border */
+        color: black;
+        }
+
+
+      .off-button {
+        background-color: lightgray;
+        border-color: gray;
+      }
+
+      .on-button {
+        background-color: lightgreen;
+        border-color: green;
+        color: white;
+      }
+
+/* Button Styles */
+.control-button {
+  padding: 10px 20px;
+  border-radius: 25px; /* Rounded corners */
+  border: 2px solid transparent; /* Initially transparent border */
+  background-color: transparent; /* Initially unfilled */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  width: 100px; /* Set a width for buttons */
+  margin: 5px;
+  display: inline-block; /* Make buttons inline for centering */
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Center the buttons inside the parent container */
+.box {
+  text-align: center;
+}
+ 
+/* Hover Effects */
+.control-button:hover {
+  background-color: #e0f7fa; /* Light shade when hovered */
+  
+}
+#openDoorButton{
+    color:green;
+}
+#closeDoorButton{
+    color: red;
+}
+#openDoorButton:hover {
+  background-color: #caf0cc; /* Light green for Open */
+  border-color: #4caf50; /* Green border for Open */
+}
+
+#closeDoorButton:hover {
+  background-color: #ffebee; /* Light red shade for Close */
+  border-color: #f44336; /* Red border for Close */
+  color: rgb(0, 0, 0); /* White text color */
+}
+
+/* Initial Button Styles for Open */
+#openDoorButton {
+  border-color: #4caf50; /* Green border for Open */
+}
+
+/* Initial Button Styles for Close */
+#closeDoorButton {
+  border-color: #f44336; /* Red border for Close */
+}
+
+/* Time Input Fields Styling */
+.time-settings {
+    margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.time-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+input[type="time"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+}
+      .input-container input {
+        padding: 8px;
+        margin-right: 10px;
+      }
+
+      .save-off-hours-btn {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: transparent; /* Initially unfilled */
+        color: green;
+        border-radius: 25px; /* Rounded corners */
+        border: 2px solid green; /* Initially transparent border */
+        cursor: pointer;
+      }
+
+      .save-off-hours-btn:hover {
+        background-color: #c3e9cb;
+        color:black;
+      }
+
+      .off-hours-container {
+        margin-top: 20px;
+      }
+
+      .input-container {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+      }
+      .table-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        height: 400px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="header">
+        <div>
+          <p class="greeting">Welcome Admin</p>
+          <h1 class="welcome-title">Door Controlling</h1>
+        </div>
+        
+        <div class="header-right">
+          <div class="notification-bell">
+            <i class="fas fa-bell"></i>
+            <div class="notification-indicator"></div>
+          </div>
+          <div class="user-profile">
+            <img src="https://i.pravatar.cc/100?img=8" alt="Alex Morgan" />
+          </div>
+        </div>
+      </div>
+    
+      <hr/>
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">Emergency Controls</h2>
+        </div>
+    <div class="door-control-container">
+      <!-- Current Door Status Box -->
+      <div class="box">
+        <div class="header11">Current Door Status</div>
+        <div class="status-box">
+          <button id="doorStatusOn" class="on">On</button>
+          <button id="doorStatusOff" class="off">Off</button>
+        </div>
+      </div>
+      
+
+     <!-- Control Door Box -->
+    <div class="box">
+        <div class="header11">Control Door</div>
+        <button class="control-button" id="openDoorButton">Open</button>
+        <button class="control-button" id="closeDoorButton">Close</button>
+    </div>
+  
+
+    <div class="box">
+  <h2 class="header11">Off-Hours Settings</h2>
+
+  <div class="time-settings">
+    <div class="time-field">
+      <label for="newStartTime">Current Start Time:</label>
+      <input type="time" id="newStartTime" value="17:00">
+    </div>
+
+    <div class="time-field">
+      <label for="newEndTime">Current End Time:</label>
+      <input type="time" id="newEndTime" value="08:10">
+    </div>
+  </div>
+
+  <button id="saveOffHoursButton" class="save-off-hours-btn">Save Off-Hours</button>
+</div>
+
+      
+      
+</div>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+      // Firebase Initialization
+      function initializeFirebase() {
+        if (!firebase.apps.length) {
+          const firebaseConfig = {
+            apiKey: "AIzaSyAhTFt7dSyZe8cvMUsGdKBEgJMqH7OOTWI",
+            authDomain: "iotbasedentrysystem-c2669.firebaseapp.com",
+            databaseURL: "https://iotbasedentrysystem-c2669-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "iotbasedentrysystem-c2669",
+          };
+          firebase.initializeApp(firebaseConfig);
+          console.log("Firebase initialized successfully.");
+        } else {
+          firebase.app(); // Use existing app if already initialized
+        }
+      }
+
+      initializeFirebase(); // Initialize Firebase
+
+      function fetchDoorStatus() {
+        initializeFirebase(); // Initialize Firebase
+        const doorStatusRef = firebase.database().ref("door/access");  // Reference to "door/access" in Firebase
+
+        doorStatusRef.once("value", function (snapshot) {
+            const status = snapshot.val().status; // Access the "status" field within "access"
+            console.log("Door Access Status:", status); // Log the status to the console
+
+            // Reset button classes first
+            document.getElementById("doorStatusOn").classList.remove("active", "inactive");
+            document.getElementById("doorStatusOff").classList.remove("active", "inactive");
+
+            // Check if the status is "granted" or "denied"
+            if (status === "granted") {
+            // When granted, On button is filled green, Off button has only border
+            document.getElementById("doorStatusOn").classList.add("active"); // Fill the "On" button with green
+            document.getElementById("doorStatusOff").classList.add("inactive"); // Off button has border only
+            } else if (status === "denied") {
+            // When denied, Off button is filled red, On button has only border
+            document.getElementById("doorStatusOff").classList.add("active"); // Fill the "Off" button with red
+            document.getElementById("doorStatusOn").classList.add("inactive"); // On button has border only
+            } else {
+            // If no status is set, treat it as denied
+            document.getElementById("doorStatusOn").classList.add("inactive"); // On button has border only
+            document.getElementById("doorStatusOff").classList.add("inactive"); // Off button has border only
+            }
+        });
+        }
+
+
+        // Function to toggle door status (Open/Close)
+        document.getElementById("openDoorButton").addEventListener("click", function () {
+        initializeFirebase(); // Initialize Firebase
+
+        // Update the door status to "granted" when Open button is clicked
+        firebase.database().ref("door/access").update({ 
+            status: "granted",  // This will indicate that the door is open
+        }).then(() => {
+            fetchDoorStatus(); // Update the status on the UI
+        }).catch((error) => {
+            console.error("Error updating door status:", error);
+        });
+        });
+
+        document.getElementById("closeDoorButton").addEventListener("click", function () {
+        initializeFirebase(); // Initialize Firebase
+
+        // Update the door status to "denied" when Close button is clicked
+        firebase.database().ref("door/access").update({ 
+            status: "denied",  // This will indicate that the door is closed
+        }).then(() => {
+            fetchDoorStatus(); // Update the status on the UI
+        }).catch((error) => {
+            console.error("Error updating door status:", error);
+        });
+        });
+
+
+           // Fetch the current off-hours settings (start and end time)
+function fetchOffHours() {
+  initializeFirebase(); // Initialize Firebase
+  const offHoursRef = firebase.database().ref("door/offHours");
+
+  offHoursRef.once("value", function (snapshot) {
+    const offHours = snapshot.val();
+    console.log("Fetched Off-Hours Data:", offHours); // Log fetched data
+
+    if (offHours) {
+      document.getElementById("newStartTime").value = offHours.startTime; // Set the start time
+      document.getElementById("newEndTime").value = offHours.endTime;     // Set the end time
+    } else {
+      alert("No off-hours settings found. Please update the times.");
+    }
+  });
+}
+
+
+
+      // Event Listener to Save Off-Hours Settings
+        document.getElementById("saveOffHoursButton").addEventListener("click", function () {
+        initializeFirebase(); // Initialize Firebase (ensure your Firebase config is properly initialized)
+
+        const newStartTime = document.getElementById("newStartTime").value; // Get Start Time
+        const newEndTime = document.getElementById("newEndTime").value;     // Get End Time
+
+        if (newStartTime && newEndTime) {
+            firebase.database().ref("door").update({
+            offHours: { startTime: newStartTime, endTime: newEndTime },
+            })
+            .then(() => {
+            fetchOffHours(); // Refresh UI with updated off-hours if this function exists
+            alert("Off-Hours updated successfully!"); // Success message
+            })
+            .catch((error) => {
+            console.error("Error updating off-hours: ", error); // Handle any update errors
+            });
+        } else {
+            alert("Please fill in both start and end times."); // Show alert if inputs are empty
+        }
+        });
+
+
+      // Fetch data when the page loads
+      window.onload = function () {
+        fetchDoorStatus();
+        fetchOffHours();
+      };
+    </script>
+  </body>
+</html>

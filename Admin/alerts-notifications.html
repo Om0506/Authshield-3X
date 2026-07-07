@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinFlow User Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+      hr {
+        margin-bottom: 20px;
+        border: none;
+        height: 4px;
+        border-radius: 20px;
+        background-color: #4270f4;
+      }
+
+      .header {
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .greeting {
+        font-size: 16px;
+        color: #003366;
+      }
+
+      .welcome-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #003366;
+      }
+
+      .user-profile img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+
+      .notification-bell {
+        position: relative;
+        margin-right: 15px;
+      }
+
+      .notification-panel {
+        background-color: white;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .notification {
+        display: flex;
+        align-items: flex-start;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 15px 0;
+        position: relative;
+        gap: 15px;
+        z-index: 1;
+      }
+
+      .notification:last-child {
+        border-bottom: none;
+      }
+
+      .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #007bff;
+        flex-shrink: 0;
+      }
+
+      .content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .description {
+        font-weight: 500;
+        color: #333;
+      }
+
+      .description a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .time {
+        font-size: 12px;
+        color: #777;
+        margin-top: 5px;
+      }
+
+      .notification:hover {
+        background-color: #f0f8ff;
+        border-radius: 10px;
+        transition: background-color 0.3s;
+      }
+
+      .accept-btn,
+      .decline-btn {
+        margin-top: 10px;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      .accept-btn {
+        background-color: #28a745;
+        color: white;
+        margin-right: 10px;
+      }
+
+      .decline-btn {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      .table-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        height: 550px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div>
+        <p class="greeting">Welcome Admin</p>
+        <h1 class="welcome-title">Alerts & Notifications</h1>
+      </div>
+
+      <div class="header-right">
+        <div class="notification-bell">
+          <i class="fas fa-bell"></i>
+          <div class="notification-indicator"></div>
+        </div>
+        <div class="user-profile">
+          <img src="https://i.pravatar.cc/100?img=8" alt="Alex Morgan" />
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <div class="table-container">
+      <div class="table-header">
+        <h2 class="table-title">Notification</h2>
+      </div>
+      <div class="notification-panel"></div>
+    </div>
+
+    <script>
+      function initializeFirebase() {
+        if (!firebase.apps.length) {
+          const firebaseConfig = {
+            apiKey: "AIzaSyAhTFt7dSyZe8cvMUsGdKBEgJMqH7OOTWI",
+            authDomain: "iotbasedentrysystem-c2669.firebaseapp.com",
+            databaseURL:
+              "https://iotbasedentrysystem-c2669-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "iotbasedentrysystem-c2669",
+          };
+          firebase.initializeApp(firebaseConfig);
+        }
+
+        fetchAndDisplayAdminRequests();
+      }
+
+      function fetchAndDisplayAdminRequests() {
+        
+        const dbRef = firebase.database().ref("admin_requests");
+        const panel = document.querySelector(".notification-panel");
+        panel.innerHTML = "";
+
+        dbRef.on("value", (snapshot) => {
+          panel.innerHTML = "";
+          const data = snapshot.val();
+
+          if (data) {
+            
+            Object.entries(data).forEach(([key, req]) => {
+              const { username, timestamp, imageBase64 } = req;
+              const readableTime = new Date(timestamp).toLocaleString();
+
+              const notif = document.createElement("div");
+              notif.classList.add("notification");
+
+              notif.innerHTML = `
+                ${
+                  imageBase64 && imageBase64 !== "data:;"
+                    ? `<img class="avatar" src="${imageBase64}" alt="${username}" />`
+                    : ""
+                }
+                <div class="content">
+                  <div class="description">
+                    <strong>${username}</strong> requested <a href="#">admin access</a>
+                  </div>
+                  <div class="time">${readableTime}</div>
+                  <div class="btn-row">
+                    <button class="accept-btn">Accept</button>
+                    <button class="decline-btn">Decline</button>
+                  </div>
+                </div>
+              `;
+
+              panel.appendChild(notif);
+
+              const acceptBtn = notif.querySelector(".accept-btn");
+              const declineBtn = notif.querySelector(".decline-btn");
+
+              acceptBtn.addEventListener("click", () => {
+  initializeFirebase();
+  const doorAccessRef = firebase.database().ref("door/access");
+
+  // ✅ Grant access first
+  doorAccessRef.set({
+    status: "granted",
+    user: username,
+  });
+
+  // ✅ Use system time (local device time)
+  const now = new Date();
+  const localDate =
+    now.getFullYear() +
+    "-" +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(now.getDate()).padStart(2, "0");
+  const time = now.toTimeString().split(" ")[0]; // HH:MM:SS
+
+  // ✅ Reference to that date's log
+  const logRef = firebase.database().ref(`logs/${localDate}`);
+
+  // ✅ Get current log count for that date to use as a number (1, 2, 3...)
+  logRef.once("value", (snapshot) => {
+    const logs = snapshot.val();
+    const nextId = logs ? Object.keys(logs).length + 1 : 1;
+
+    logRef.child(nextId).set({
+      username: username,
+      time: time,
+      access_type: "admin access",
+    });
+  });
+
+  // ✅ Auto deny after 5 seconds
+  setTimeout(() => {
+    doorAccessRef.set({
+      status: "denied",
+      user: "unknown",
+    });
+  }, 5000);
+
+  // ✅ Remove the request
+  firebase.database().ref(`admin_requests/${key}`).remove();
+});
+
+
+
+              declineBtn.addEventListener("click", () => {
+                firebase.database().ref(`admin_requests/${key}`).remove();
+              });
+            });
+          } else {
+            panel.innerHTML =
+              "<p style='padding: 20px; color: gray;'>No admin requests yet 🚫</p>";
+          }
+        });
+      }
+
+      initializeFirebase();
+    </script>
+  </body>
+</html>

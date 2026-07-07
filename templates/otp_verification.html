@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP-Based Entry</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #003366, #0059b3);
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 400px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        input {
+            width: 80%;
+            padding: 8px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .go-back-btn {
+            background-color: #ffaa00;
+            color: black;
+        }
+
+        .go-back-btn:hover {
+            background-color: #ffcc33;
+        }
+
+        .scan-again-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .scan-again-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🔐 Secure OTP-Based Entry</h2>
+
+        <label>📞 Enter Mobile Number:</label>
+        <input type="text" id="mobile" placeholder="Enter 10-digit mobile number">
+
+        <button id="send-otp" onclick="sendOTP()" class="btn scan-again-btn">📩 Send OTP</button>
+
+        <div id="otp-section" style="display: none;">
+            <label>🔢 Enter OTP:</label>
+            <input type="text" id="otp" placeholder="Enter OTP">
+            <button id="verify-otp" onclick="verifyOTP()" class="btn scan-again-btn">✅ Verify OTP</button>
+        </div>
+
+        <p id="status-message"></p>
+
+        <div class="button-container" id="button-container">
+            <button onclick="goBack()" class="btn go-back-btn">⬅ Go Back</button>
+            <button onclick="resetProcess()" class="btn scan-again-btn">🔄 Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        function sendOTP() {
+            let mobile = document.getElementById("mobile").value;
+            if (mobile.length !== 10 || isNaN(mobile)) {
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+            }
+
+            fetch("/send_otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mobile: mobile })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.status === "success") {
+                    document.getElementById("otp-section").style.display = "block";
+                    document.getElementById("send-otp").style.display = "none";
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function verifyOTP() {
+            let mobile = document.getElementById("mobile").value;
+            let otp = document.getElementById("otp").value;
+
+            fetch("/verify_otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mobile: mobile, otp: otp })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("status-message").innerText = data.message;
+                if (data.status === "success") {
+                    alert("✅ Access Granted!");
+                    document.getElementById("verify-otp").style.display = "none";
+                    document.getElementById("button-container").style.display = "flex";
+                } else {
+                    alert("❌ Incorrect OTP. Try Again!");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function resetProcess() {
+            document.getElementById("mobile").value = "";
+            document.getElementById("otp").value = "";
+            document.getElementById("otp-section").style.display = "none";
+            document.getElementById("send-otp").style.display = "block";
+            document.getElementById("verify-otp").style.display = "block";
+            document.getElementById("button-container").style.display = "none";
+            document.getElementById("status-message").innerText = "";
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+</body>
+</html>

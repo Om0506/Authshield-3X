@@ -1,0 +1,19 @@
+{
+  "users": {
+    "user1": {
+      "username": "john_doe",
+      "mobile": "1234567890",
+      "dateRegistered": "26/03/2025"
+    },
+    "user2": {
+      "username": "jane_smith",
+      "mobile": "9876543210",
+      "dateRegistered": "26/03/2025"
+    },
+    "user3": {
+      "username": "alex_morgan",
+      "mobile": "1122334455",
+      "dateRegistered": "26/03/2025"
+    }
+  }
+}

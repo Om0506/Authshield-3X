@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Face Capture - Admin Approval</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #014A7F;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #0F4C81;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 400px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 90%;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    #video, #preview {
+      width: 100%;
+      height: auto;
+      border: 4px solid white;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 8px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ffcc00;
+      color: black;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #e6b800;
+    }
+
+    #status {
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🔒 Face Recognition</h2>
+    <p>Capture your face to send for admin approval.</p>
+    
+    <input type="text" id="username" placeholder="Enter your name">
+
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <img id="preview" src="" style="display: none;">
+
+    <p id="status">Waiting for capture...</p>
+
+    <button id="capture">📸 Capture</button>
+    <button id="upload">⬆️ Upload</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhTFt7dSyZe8cvMUsGdKBEgJMqH7OOTWI",
+      authDomain: "iotbasedentrysystem-c2669.firebaseapp.com",
+      databaseURL: "https://iotbasedentrysystem-c2669-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iotbasedentrysystem-c2669",
+      storageBucket: "iotbasedentrysystem-c2669.appspot.com",
+      messagingSenderId: "488328144230",
+      appId: "1:488328144230:web:8b722a5bd1ddd18114d4a7",
+      measurementId: "G-99RE76T102"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const preview = document.getElementById('preview');
+    const statusText = document.getElementById('status');
+    let capturedImage = null;
+
+    // Start webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+      })
+      .catch((error) => {
+        console.error("Camera Error:", error);
+      });
+
+    // Capture Image
+    document.getElementById('capture').addEventListener('click', () => {
+  const context = canvas.getContext('2d');
+
+  // Resize for lighter image
+  canvas.width = 320;
+  canvas.height = 240;
+
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  capturedImage = canvas.toDataURL('image/png');
+
+  // Show preview
+  video.style.display = "none";
+  preview.src = capturedImage;
+  preview.style.display = "block";
+
+  statusText.textContent = "Face Captured ✅";
+  statusText.style.color = "lime";
+});
+
+
+    // Upload to Firebase Realtime DB
+    document.getElementById('upload').addEventListener('click', () => {
+      const username = document.getElementById('username').value.trim();
+
+      if (!username || !capturedImage) {
+        alert("Please enter your name and capture your face first.");
+        return;
+      }
+
+      database.ref('admin_requests/' + username).set({
+        username: username,
+        imageBase64: capturedImage,
+        timestamp: new Date().toISOString()
+      }).then(() => {
+        alert("✅ Face data sent to Admin!");
+
+        // Reset
+        preview.style.display = "none";
+        video.style.display = "block";
+        preview.src = '';
+        capturedImage = null;
+        document.getElementById('username').value = '';
+        statusText.textContent = "Waiting for capture...";
+        statusText.style.color = "red";
+      }).catch((error) => {
+        alert("❌ Upload failed: " + error.message);
+      });
+    });
+  </script>
+</body>
+</html>

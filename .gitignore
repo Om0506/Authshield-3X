@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# VS Code
+.vscode/
+
+# Build
+build/
+dist/
+
+# Environment
+.env
+.env.*
+
+# Firebase Credentials
+firebase_key.json
+
+# Temporary Files
+tempCodeRunnerFile.py
+
+# Logs
+*.log
+AccessLogs.csv
+
+# Videos
+Video/
+
+# Images
+ImagesUnknown/
+
+# Training Images (optional)
+TrainingImage/
+TrainingImageLabel/
+
+# OS Files
+.DS_Store
+Thumbs.db

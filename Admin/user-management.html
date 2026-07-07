@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinFlow User Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script type="module" defer src="script/script.js"></script>
+    <style>
+      /* Existing styles here */
+      hr {
+        margin-bottom: 20px; /* Space below the hr */
+        border: none; /* Remove default border */
+        height: 4px; /* Increase thickness */
+        border-radius: 20px; /* Rounded edges */
+        background-color: #4270f4; /* Light blue shade */
+      }
+
+      .header {
+        margin-bottom: 15px; /* Minimize space after the header */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .greeting {
+        font-size: 16px;
+        color: #003366;
+      }
+
+      .welcome-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #003366;
+      }
+
+      .user-profile img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+
+      .notification-bell {
+        position: relative;
+        margin-right: 15px;
+      }
+
+      .notification-bell .notification-indicator {
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      .table-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #ccc; /* Light grey border */
+      }
+
+      .table-title {
+        color: #003366;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .add-user-btn {
+        background-color: transparent;
+        color: #4270f4;
+        padding: 10px 20px;
+        border: 2px solid #4270f4;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+
+      .add-user-btn i {
+        margin-right: 8px;
+      }
+
+      .add-user-btn:hover {
+        background-color: #e8f0ff;
+        border-color: #4270f4;
+      }
+
+      .table-wrapper {
+        border-radius: 15px; /* Outer border round corners */
+        overflow: hidden; /* Ensures table stays inside rounded border */
+        border: 2px solid #ccc; /* Updated to light grey */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
+        background-color: white; /* Background for full rounded effect */
+        margin-top: 20px;
+      }
+
+      #list {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+        text-align: left;
+      }
+
+      #list thead {
+        background-color: #8ecae6;
+        color: white;
+      }
+
+      #list th,
+      #list td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+      }
+
+      #list tbody tr:nth-child(even) {
+        background-color: #f2f2f2; /* Light grey for even rows */
+      }
+
+      #list tbody tr:nth-child(odd) {
+        background-color: #ffffff; /* White for odd rows */
+      }
+
+      #list tbody tr:hover {
+        background-color: #bde0fe; /* Light blue hover effect */
+      }
+
+      #list td .btn {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        margin-right: 5px;
+      }
+
+      .btn-default {
+        background-color: #007bff;
+        color: white;
+        border: none;
+      }
+
+      .btn-default:hover {
+        background-color: #0056b3;
+      }
+
+      .btn-danger {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+      }
+
+      .btn-danger:hover {
+        background-color: #cc0000;
+      }
+
+      @media (max-width: 768px) {
+        #list th,
+        #list td {
+          padding: 10px;
+          font-size: 14px;
+        }
+      }
+      /* Container to align both buttons in one line */
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adds space between buttons */
+}
+
+/* General Button Style (Edit/Delete) */
+.edit-btn, .delete-btn {
+  background-color: transparent;
+  padding: 10px 20px;
+  border: 2px solid;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Edit Button Styling */
+.edit-btn {
+  color: #32a852; /* Green Text */
+  border-color: #32a852;
+}
+
+.edit-btn i {
+  margin-right: 8px;
+}
+
+.edit-btn:hover {
+  background-color: #e8ffe8;
+  border-color: #32a852;
+}
+
+/* Delete Button Styling */
+.delete-btn {
+  color: #f54b4b; /* Red Text */
+  border-color: #f54b4b;
+}
+
+.delete-btn i {
+  margin-right: 8px;
+}
+
+.delete-btn:hover {
+  background-color: #ffe8e8;
+  border-color: #f54b4b;
+} 
+
+/* Modal styling */
+#editUserModal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  padding-top: 100px;
+}
+
+/* Modal content box */
+.modal-content {
+  background-color: white;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%; /* Adjust width */
+  max-width: 400px; /* Set a max-width */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Title inside the modal */
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Form styling inside the modal */
+#editUserForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0px; /* Reduced the space between elements */
+}
+
+/* Input styling */
+#editUserForm input {
+  margin-bottom: 10px; /* Adjust the margin */
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Label styling */
+#editUserForm label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Buttons styling */
+#editUserForm button {
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%; /* Full width button */
+  border: 2px solid transparent; /* Add border for the buttons */
+  background-color: transparent; /* No background by default */
+}
+
+#editUserForm button[type="submit"] {
+  gap:10px;
+  background-color: #4CAF50; /* Green for update */
+  color: white;
+  border: 2px solid #4CAF50; /* Green border */
+}
+
+#editUserForm button[type="button"] {
+  background-color: transparent;
+  color: #f44336; /* Red for cancel */
+  border: 2px solid #f44336; /* Red border */
+}
+
+#editUserForm button[type="submit"]:hover {
+  background-color: #45a049; /* Dark green on hover */
+}
+
+#editUserForm button[type="button"]:hover {
+  background-color: #ffebee; /* Light red on hover */
+  color: #d32f2f; /* Darker red on hover */
+}
+
+/* Close button for the modal */
+#editUserModal .modal-content .close-btn {
+  background-color: transparent;
+  border: none;
+  color: #f44336;
+  font-size: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Center modal content */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: auto;
+}
+
+/* For the cancel button at the bottom */
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Optional: Add a backdrop click to close modal */
+#editUserModal:target {
+  display: block; /* Modal will appear when target is clicked */
+}
+
+#buttonof {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  gap: 20px; /* Add space between the buttons */
+}
+
+/* Modal styling */
+#addUserModal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); 
+  padding-top: 100px;
+}
+
+/* Modal content box */
+.modal-content {
+  background-color: white;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%; 
+  max-width: 400px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Title inside the modal */
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Form styling inside the modal */
+#addUserForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+/* Input styling */
+#addUserForm input, #addUserForm button {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Buttons styling */
+#addUserForm button {
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%; 
+  border: 2px solid transparent;
+  background-color: transparent;
+}
+
+#addUserForm button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  border: 2px solid #4CAF50;
+}
+
+#addUserForm button[type="button"] {
+  background-color: transparent;
+  color: #f44336;
+  border: 2px solid #f44336;
+}
+
+#addUserForm button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+#addUserForm button[type="button"]:hover {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+/* Close button for the modal */
+#addUserModal .modal-content .close-btn {
+  background-color: transparent;
+  border: none;
+  color: #f44336;
+  font-size: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Style the Register Mobile Number link */
+#addUserModal a {
+  color: #4CAF50; /* Green color for the link */
+  text-decoration: none;
+}
+
+#addUserModal a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+  </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div>
+        <p class="greeting">Welcome Admin</p>
+        <h1 class="welcome-title">User Management</h1>
+      </div>
+  
+      <div class="header-right">
+        <div class="notification-bell">
+          <i class="fas fa-bell"></i>
+          <div class="notification-indicator"></div>
+        </div>
+        <div class="user-profile">
+          <img src="https://i.pravatar.cc/100?img=8" alt="Alex Morgan" />
+        </div>
+      </div>
+    </div>
+  
+    <hr/>
+  
+    <div class="content-container">
+      <div class="table-container">
+        <div class="table-header">
+          <h2 class="table-title">User List</h2>
+          <button class="add-user-btn" id="addUserButton">
+            <i class="fas fa-plus"></i> Add User
+          </button>
+        </div>
+  
+        <div class="table-wrapper">
+          <table id="list">
+            <thead>
+              <tr>
+                <th>Sr. No</th>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Mobile No</th>
+                <th>Date Registered</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Edit User Modal -->
+    <div id="editUserModal" style="display: none;">
+      <div class="modal-content">
+        <h3>Edit User</h3>
+        <form id="editUserForm">
+          <label for="editUsername">Username:</label>
+          <input type="text" id="editUsername" required><br> 
+  
+          <label for="editMobile">Mobile Number:</label>
+          <input type="text" id="editMobile" required><br> 
+  
+          <input type="hidden" id="userIdToEdit">
+          <div id="buttonof">
+          <button type="submit" id="submit">Update</button>
+          <button type="button" onclick="closeEditModal()">Cancel</button>
+        </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="addUserModal" style="display: none;">
+      <div class="modal-content">
+        <h3>Add User</h3>
+        <form id="addUserForm">
+          <label for="addUsername">Username:</label>
+          <input type="text" id="addUsername" required><br><br>
+    
+          <label for="addMobile">Mobile Number:</label>
+          <input type="text" id="addMobile" required><br><br>
+    
+          <!-- Take Image Button -->
+          <button type="button" id="takeImageBtn" onclick="takeImage()">Take Image</button><br><br>
+    
+          <!-- Register Mobile Number Option -->
+          <label for="registerMobile">Register Mobile Number:</label>
+          <a href="https://console.twilio.com/us1/develop/phone-numbers/manage/verified" target="_blank">Click here to register mobile number</a><br><br>
+    
+          <input type="hidden" id="newUserId">
+          <div id="buttonof">
+            <button type="submit" id="submit">Add User</button>
+            <button type="button" onclick="closeAddModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+      // Firebase Initialization (this function ensures Firebase is initialized only once)
+      function initializeFirebase() {
+        if (!firebase.apps.length) {
+          const firebaseConfig = {
+            apiKey: "AIzaSyAhTFt7dSyZe8cvMUsGdKBEgJMqH7OOTWI",
+            authDomain: "iotbasedentrysystem-c2669.firebaseapp.com",
+            databaseURL: "https://iotbasedentrysystem-c2669-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "iotbasedentrysystem-c2669",
+          };
+          firebase.initializeApp(firebaseConfig);
+          console.log("Firebase initialized successfully.");
+        } else {
+          firebase.app(); // Use existing app if already initialized
+        }
+      }
+  
+      // Call initializeFirebase once on page load to ensure Firebase is initialized
+      initializeFirebase();
+  
+      // Function to initialize the Firebase User Table
+      function initializeFirebaseUserTable() {
+        console.log("Initializing Firebase User Table...");
+        const dbRef = firebase.database().ref("users"); // Get reference to "users" node
+  
+        dbRef.on("value", (snapshot) => {
+          const userTableBody = document.getElementById("userTableBody");
+          userTableBody.innerHTML = ""; // Clear previous data
+  
+          if (snapshot.exists()) {
+            let srNo = 1;
+            snapshot.forEach((childSnapshot) => {
+              const user = childSnapshot.val();
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${srNo++}</td>
+                <td>${childSnapshot.key}</td>
+                <td>${user.username || "N/A"}</td>
+                <td>${user.mobile || "N/A"}</td>
+                <td>${user.dateRegistered || "N/A"}</td>
+                <td>
+                  <div class="button-container">
+                    <button class="edit-btn" onclick="openEditModal('${childSnapshot.key}', '${user.username}', '${user.mobile}')">Edit</button>
+                    <button class="delete-btn" onclick="deleteUser('${childSnapshot.key}')">Delete</button>
+                  </div>
+                </td>
+              `;
+              userTableBody.appendChild(row);
+            });
+          } else {
+            userTableBody.innerHTML = `<tr><td colspan="6">No user data found.</td></tr>`;
+          }
+        }, (error) => {
+          console.error("Error fetching data:", error);
+        });
+      }
+      
+      initializeFirebase();
+      // Open Edit Modal and fill the fields
+      function openEditModal(userId, currentUsername, currentMobile) {
+        document.getElementById("editUserModal").style.display = "block";
+        document.getElementById("editUsername").value = currentUsername;
+        document.getElementById("editMobile").value = currentMobile;
+        document.getElementById("userIdToEdit").value = userId;
+      }
+  
+      // Close the Edit Modal
+      function closeEditModal() {
+        document.getElementById("editUserModal").style.display = "none";
+      }
+  
+      // Handle form submission to update user
+      document.getElementById("editUserForm").addEventListener("submit", function (event) {
+        initializeFirebase();
+        event.preventDefault(); // Prevent form from submitting normally
+        const userId = document.getElementById("userIdToEdit").value;
+        const newUsername = document.getElementById("editUsername").value;
+        const newMobile = document.getElementById("editMobile").value;
+  
+        // Validate inputs
+        if (!newUsername || !newMobile) {
+          alert("Both username and mobile number are required.");
+          return;
+        }
+  
+        if (!/^\d{10}$/.test(newMobile)) { // Validate mobile number format (10 digits)
+          alert("Invalid mobile number. Please enter a valid 10-digit number.");
+          return;
+        }
+  
+        // Update the user data in Firebase
+        const userRef = firebase.database().ref("users/" + userId);
+        userRef.update({
+          username: newUsername,
+          mobile: newMobile,
+        }).then(() => {
+          alert("User data updated successfully!");
+          closeEditModal(); // Close the modal after update
+        }).catch((error) => {
+          console.error("Error updating user:", error);
+          alert("Failed to update user data. Try again.");
+        });
+      });
+  
+      // Function to delete a user
+      function deleteUser(userId) {
+        
+        initializeFirebase();
+        const confirmation = confirm("Are you sure you want to delete this user?");       
+        if (confirmation) {
+          const userRef = firebase.database().ref("users/" + userId);
+  
+          userRef.remove()
+            .then(() => {
+              alert("User deleted successfully!");
+            })
+            .catch((error) => {
+              console.error("Error deleting user:", error);
+              alert("Failed to delete the user. Try again.");
+            });
+        }
+      }
+
+      // Open Add User Modal
+        document.getElementById('addUserButton').addEventListener('click', function() {
+          document.getElementById('addUserModal').style.display = 'block';
+        });
+
+        // Close Add User Modal
+        function closeAddModal() {
+          document.getElementById('addUserModal').style.display = 'none';
+        }
+
+        // Handle Add User Form Submission
+        document.getElementById("addUserForm").addEventListener("submit", function (event) {
+            initializeFirebase();
+            event.preventDefault(); // Prevent form submission
+
+            const newUsername = document.getElementById("addUsername").value;
+            const newMobile = document.getElementById("addMobile").value;
+            
+            // Validate inputs
+            if (!newUsername || !newMobile) {
+                alert("Both username and mobile number are required.");
+                return;
+            }
+
+            if (!/^\d{10}$/.test(newMobile)) {
+                alert("Invalid mobile number. Please enter a valid 10-digit number.");
+                return;
+            }
+
+            // Get the last user ID from Firebase (or start from 1000 if no data exists)
+            const lastUserIdRef = firebase.database().ref("lastUserId");
+            lastUserIdRef.once("value").then((snapshot) => {
+                let newUserId = 1000; // Default to 1000 if no ID is found
+
+                if (snapshot.exists()) {
+                    // If the lastUserId exists, increment it by 1
+                    newUserId = snapshot.val() + 1;
+                }
+
+                // Store the new user with the newUserId
+                const userRef = firebase.database().ref("users/" + newUserId);
+                userRef.set({
+                    username: newUsername,
+                    mobile: newMobile,
+                    dateRegistered: new Date().toLocaleDateString(), // Add the current date
+                }).then(() => {
+                    // Update lastUserId in Firebase to the new value
+                    lastUserIdRef.set(newUserId);
+
+                    alert("User added successfully!");
+                    closeAddModal(); // Close the modal after adding the user
+                }).catch((error) => {
+                    console.error("Error adding user:", error);
+                    alert("Failed to add user. Try again.");
+                });
+            });
+        });
+
+
+       function takeImage() {
+  // Get the values from the form
+  const username = document.getElementById('addUsername').value;
+  
+  // Send the data to the backend
+  fetch('http://localhost:5000/take_image', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username: username,
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert(data.message);  // Show success or error message
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred while capturing image.');
+  });
+}
+
+    </script>
+  </body>
+</html>
